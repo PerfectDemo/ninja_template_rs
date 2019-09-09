@@ -1,0 +1,7 @@
+[package]
+name = "ninja_template_rs"
+version = "0.1.0"
+authors = ["bidao <bidao@gaoding.com>"]
+edition = "2018"
+
+[dependencies]
