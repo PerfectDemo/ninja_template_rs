@@ -71,12 +71,12 @@ fn findOther(target: &str) -> Option<Other> {
         if endIndex != 0 {
             let index = target.find('|').unwrap_or(0);
             if index != 0 {
-                let result: Vec<&str> = target[2..endIndex - 2].split('|').collect();
+                let result: Vec<&str> = target[2..endIndex].split('|').collect();
                 let value = result[0].trim();
                 let formatter = result[1].trim();
                 instructions.push(Instruction::FormattedValue(&value, &formatter));
             } else {
-                let value = target[2..endIndex - 2].trim();
+                let value = target[2..endIndex].trim();
                 instructions.push(Instruction::Value(&value));
             }
             end = endIndex + 2;
@@ -194,6 +194,14 @@ mod test {
     }
 
     #[test]
+    fn testValue() {
+        let target = "{{ ninja }}";
+        let other = findOther(&target).unwrap();
+        println!("{:?}", other);
+        assert!(other.instructions.len() > 0);
+    }
+
+    #[test]
     fn testFor() {
         let target = "{ for item, index of list } hello  {{ ninja | 7777 }}{ endfor }";
         let other = findOther(&target).unwrap();
@@ -206,7 +214,7 @@ mod test {
         let target = "{ if ninja.hello } 
                         hello {{ hello | value }} 
                       { else } 
-                        ninja {{ good }}
+                        ninja {{ good | 777 }}
                       { endif }";
         let other = findOther(&target).unwrap();
         println!("{:?}", other);
