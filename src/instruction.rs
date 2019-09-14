@@ -3,8 +3,8 @@ pub enum Instruction<'template> {
     Value(&'template str),
     Literal(&'template str),
     FormattedValue(&'template str, &'template str),
-    Branch(&'template str, Vec<Instruction<'template>>),
-    Iterate(&'template str,  Vec<Instruction<'template>>)
+    Branch(&'template str, Vec<Instruction<'template>>, Vec<Instruction<'template>>),
+    Iterate(&'template str, &'template str, Vec<Instruction<'template>>)
 // 
 }
 
@@ -54,11 +54,12 @@ mod test {
 
     #[test]
     fn testBranch() {
-        let branch = Instruction::Branch("branch", vec![Instruction::Literal("literal")]);
+        let branch = Instruction::Branch("branch", vec![Instruction::Literal("literal")], vec![Instruction::Literal("literal")]);
         match branch {
-            Instruction::Branch(value, children) => {
+            Instruction::Branch(value, trueChildren, falseChildren) => {
                 assert_eq!(value, "branch");
-                assert_eq!(children.len(), 1);
+                assert_eq!(trueChildren.len(), 1);
+                assert_eq!(falseChildren.len(), 1);
             },
             _ => {
                 println!("none thing");
@@ -68,10 +69,11 @@ mod test {
 
     #[test]
     fn testIterate() {
-        let iterate = Instruction::Iterate("iterate", vec![Instruction::Value("value"), Instruction::Literal("literal")]);
+        let iterate = Instruction::Iterate("iterate", "ninja", vec![Instruction::Value("value"), Instruction::Literal("literal")]);
         match iterate {
-            Instruction::Iterate(iterate, children) => {
+            Instruction::Iterate(iterate, item, children) => {
                 assert_eq!(iterate, "iterate");
+                assert_eq!(item, "ninja");
                 assert_eq!(children.len(), 2);
             },
             _ => {
